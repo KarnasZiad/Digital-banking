@@ -22,6 +22,7 @@ public class user {
     private long id;
     private String firstName;
     private String lastName;
+    private String otherName;
     private String gender;
     private String email;
     private String phone;
@@ -30,6 +31,7 @@ public class user {
     private String StateOfOrigin;
     private String accountNumber;
     private BigDecimal accountBalance;
+    private String status;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

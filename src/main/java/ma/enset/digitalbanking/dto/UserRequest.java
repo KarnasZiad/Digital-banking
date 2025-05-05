@@ -16,6 +16,7 @@ public class UserRequest {
     private long id;
     private String firstName;
     private String lastName;
+    private String otherName;
     private String gender;
     private String email;
     private String phone;
@@ -24,4 +25,5 @@ public class UserRequest {
     private String StateOfOrigin;
     private String accountNumber;
     private BigDecimal accountBalance;
+    private String status;
 }
