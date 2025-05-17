@@ -2,6 +2,7 @@ package ma.enset.digitalbanking.service.Impl;
 
 import ma.enset.digitalbanking.dto.AccountInfo;
 import ma.enset.digitalbanking.dto.BankResponse;
+import ma.enset.digitalbanking.dto.EnquiryRequest;
 import ma.enset.digitalbanking.dto.UserRequest;
 import ma.enset.digitalbanking.entity.user;
 import ma.enset.digitalbanking.repository.UserRepository;
@@ -56,5 +57,38 @@ public class UserServiceImpl implements UserService {
 
                 .build();
 
+    }
+
+    @Override
+    public BankResponse balanceEnquiry(EnquiryRequest request) {
+        // check if the provided account number exists in the db
+        Boolean isAccountExists = userRepository.existsByAccountNumber(request.getAccountNumber());
+        if(!isAccountExists){
+            return BankResponse.builder()
+                    .responseCode(AccountUtils.ACCOUNT_NOT_EXISTS_CODE)
+                    .responseMessage(AccountUtils.ACCOUNT_NOT_EXISTS_MESSAGE)
+                    .accountInfo(null)
+                    .build();
+        }
+        user foundUser = userRepository.findByAccountNumber(request.getAccountNumber());
+        return BankResponse.builder()
+                .responseCode(AccountUtils.ACCOUNT_FOUND_CODE)
+                .responseMessage(AccountUtils.ACCOUNT_FOUND_SUCCES)
+                .accountInfo(AccountInfo.builder()
+                        .accountBalance(foundUser.getAccountBalance())
+                        .accountNumber(foundUser.getAccountNumber())
+                        .accountName(foundUser.getFirstName() + " " + foundUser.getLastName())
+                        .build())
+                .build();
+    }
+
+    @Override
+    public String nameEnquiry(EnquiryRequest request) {
+        Boolean isAccountExists = userRepository.existsByAccountNumber(request.getAccountNumber());
+        if(!isAccountExists) {
+            return AccountUtils.ACCOUNT_NOT_EXISTS_MESSAGE;
+        }
+        user foundUser = userRepository.findByAccountNumber(request.getAccountNumber());
+        return foundUser.getFirstName() + " " + foundUser.getLastName();
     }
 }
