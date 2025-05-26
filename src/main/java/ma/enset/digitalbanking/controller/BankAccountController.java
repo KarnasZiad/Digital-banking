@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/accounts")
 @AllArgsConstructor
+@CrossOrigin("*")
 public class BankAccountController {
     private final BankAccountService bankAccountService;
 
