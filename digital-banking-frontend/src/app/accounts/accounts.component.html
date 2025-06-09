@@ -1,0 +1,154 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header d-flex align-items-center">
+          <i class="bi bi-search me-2"></i>
+          Search Account
+        </div>
+        <div class="card-body">
+          <form [formGroup]="accountFormGroup" (ngSubmit)="handleSearchAccount()">
+            <div class="input-group shadow-sm">
+              <span class="input-group-text">
+                <i class="bi bi-bank"></i>
+              </span>
+              <input type="text" formControlName="accountId" class="form-control" placeholder="Enter account ID">
+              <button class="btn btn-primary">
+                <i class="bi bi-search me-1"></i>
+                Search
+              </button>
+            </div>
+          </form>
+
+          <ng-template #errorTemplate>
+            <ng-container *ngIf="errorMessage; else loading">
+              <div class="alert alert-danger mt-3">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                {{errorMessage}}
+              </div>
+            </ng-container>
+            <ng-template #loading>
+              <div class="text-center mt-3">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </ng-template>
+          </ng-template>
+
+          <ng-container *ngIf="accountObservable | async as accountDetails">
+            <div class="account-info mt-4">
+              <div class="balance-card bg-light p-3 rounded mb-3">
+                <h5 class="mb-2">Balance</h5>
+                <h3 class="mb-0">{{accountDetails.balance | number:'1.2-2'}} DH</h3>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Date</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let op of accountDetails.accountOperationDTOS">
+                      <td>{{op.id}}</td>
+                      <td>{{op.operationDate | date:'medium'}}</td>
+                      <td>
+                        <span [class]="op.type === 'DEBIT' ? 'badge bg-danger' : 'badge bg-success'">
+                          {{op.type}}
+                        </span>
+                      </td>
+                      <td>{{op.amount | number:'1.2-2'}} DH</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <ul class="pagination justify-content-center mt-3">
+                <li class="page-item" *ngFor="let page of [].constructor(accountDetails.totalPages); let i = index">
+                  <a [ngClass]="page==currentPage?'btn-primary':'btn-outline-primary'" (click)="gotoPage(i)" class="btn btn-sm mx-1">
+                    {{i}}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header d-flex align-items-center">
+          <i class="bi bi-currency-exchange me-2"></i>
+          Operations
+        </div>
+        <div class="card-body">
+          <form [formGroup]="operationFromGroup" (ngSubmit)="handleAccountOperation()" method="post">
+            <div class="operation-type mb-3">
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" formControlName="operationType" value="DEBIT" id="debitOp">
+                <label class="btn btn-outline-danger" for="debitOp">
+                  <i class="bi bi-dash-circle me-1"></i>
+                  DEBIT
+                </label>
+
+                <input type="radio" class="btn-check" formControlName="operationType" value="CREDIT" id="creditOp">
+                <label class="btn btn-outline-success" for="creditOp">
+                  <i class="bi bi-plus-circle me-1"></i>
+                  CREDIT
+                </label>
+
+                <input type="radio" class="btn-check" formControlName="operationType" value="TRANSFER" id="transferOp">
+                <label class="btn btn-outline-primary" for="transferOp">
+                  <i class="bi bi-arrow-left-right me-1"></i>
+                  TRANSFER
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-3" *ngIf="operationFromGroup.value.operationType=='TRANSFER'">
+              <label class="form-label">Account Destination</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-bank"></i>
+                </span>
+                <input type="text" formControlName="accountDestination" class="form-control" placeholder="Enter destination account">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Amount</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-cash"></i>
+                </span>
+                <input type="number" formControlName="amount" class="form-control" placeholder="Enter amount">
+                <span class="input-group-text">DH</span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-chat"></i>
+                </span>
+                <input type="text" formControlName="description" class="form-control" placeholder="Enter description">
+              </div>
+            </div>
+
+            <button class="btn btn-primary w-100">
+              <i class="bi bi-check-circle me-1"></i>
+              Execute Operation
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

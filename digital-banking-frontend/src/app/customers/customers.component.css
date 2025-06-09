@@ -1,0 +1,111 @@
+.card {
+  border: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 1rem;
+}
+
+.card-header h5 {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.input-group {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.input-group-text {
+  border: none;
+}
+
+.input-group .form-control {
+  border: none;
+  box-shadow: none !important;
+}
+
+.input-group .form-control:focus {
+  border: none;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  color: var(--secondary-color);
+}
+
+.table td {
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.875rem;
+}
+
+.btn-outline-primary {
+  border-width: 1px;
+}
+
+.btn-outline-primary:hover {
+  background-color: rgba(25, 118, 210, 0.1);
+  color: var(--primary-color);
+}
+
+.btn-outline-danger:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--danger-color);
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25rem;
+}
+
+.text-muted {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .table-responsive {
+    margin: 0 -1rem;
+  }
+  
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .card-header .btn {
+    width: 100%;
+  }
+}

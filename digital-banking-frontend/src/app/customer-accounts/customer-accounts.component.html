@@ -1,0 +1,213 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-person-badge me-2"></i>
+              <h5 class="mb-0">Customer Details</h5>
+            </div>
+            <a routerLink="/customers" class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-arrow-left me-1"></i>
+              Back to Customers
+            </a>
+          </div>
+        </div>
+        <div class="card-body">
+          <ng-container *ngIf="customer; else loading">
+            <!-- Customer Info -->
+            <div class="customer-info mb-4">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="info-card bg-light p-3 rounded">
+                    <h6 class="text-muted mb-2">Customer ID</h6>
+                    <p class="h5 mb-0">{{customer.id}}</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="info-card bg-light p-3 rounded">
+                    <h6 class="text-muted mb-2">Name</h6>
+                    <p class="h5 mb-0">{{customer.name}}</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="info-card bg-light p-3 rounded">
+                    <h6 class="text-muted mb-2">Email</h6>
+                    <p class="h5 mb-0">{{customer.email}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- New Account Form -->
+            <div class="mb-4" *ngIf="showNewAccountForm">
+              <div class="card">
+                <div class="card-header bg-light">
+                  <h6 class="mb-0">New Account</h6>
+                </div>
+                <div class="card-body">
+                  <form [formGroup]="newAccountForm!" (ngSubmit)="handleNewAccount()">
+                    <div class="mb-3">
+                      <label class="form-label">Account Type</label>
+                      <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" formControlName="accountType" value="current" id="currentAccount">
+                        <label class="btn btn-outline-primary" for="currentAccount">Current Account</label>
+                        <input type="radio" class="btn-check" formControlName="accountType" value="saving" id="savingAccount">
+                        <label class="btn btn-outline-primary" for="savingAccount">Saving Account</label>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Initial Balance</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                        <input type="number" class="form-control" formControlName="initialBalance"
+                               [class.is-invalid]="newAccountForm?.get('initialBalance')?.touched && newAccountForm?.get('initialBalance')?.errors">
+                      </div>
+                      <div class="form-text text-danger" 
+                           *ngIf="newAccountForm?.get('initialBalance')?.touched && newAccountForm?.get('initialBalance')?.errors?.['required']">
+                        Initial balance is required
+                      </div>
+                      <div class="form-text text-danger" 
+                           *ngIf="newAccountForm?.get('initialBalance')?.touched && newAccountForm?.get('initialBalance')?.errors?.['min']">
+                        Initial balance must be positive
+                      </div>
+                    </div>
+
+                    <ng-container [ngSwitch]="newAccountForm?.get('accountType')?.value">
+                      <div class="mb-3" *ngSwitchCase="'current'">
+                        <label class="form-label">Overdraft</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="bi bi-cash"></i></span>
+                          <input type="number" class="form-control" formControlName="overDraft"
+                                 [class.is-invalid]="newAccountForm?.get('overDraft')?.touched && newAccountForm?.get('overDraft')?.errors">
+                        </div>
+                        <div class="form-text text-danger" 
+                             *ngIf="newAccountForm?.get('overDraft')?.touched && newAccountForm?.get('overDraft')?.errors?.['required']">
+                          Overdraft is required
+                        </div>
+                        <div class="form-text text-danger" 
+                             *ngIf="newAccountForm?.get('overDraft')?.touched && newAccountForm?.get('overDraft')?.errors?.['min']">
+                          Overdraft must be non-negative
+                        </div>
+                      </div>
+
+                      <div class="mb-3" *ngSwitchCase="'saving'">
+                        <label class="form-label">Interest Rate (%)</label>
+                        <div class="input-group">
+                          <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                          <input type="number" class="form-control" formControlName="interestRate"
+                                 [class.is-invalid]="newAccountForm?.get('interestRate')?.touched && newAccountForm?.get('interestRate')?.errors">
+                        </div>
+                        <div class="form-text text-danger" 
+                             *ngIf="newAccountForm?.get('interestRate')?.touched && newAccountForm?.get('interestRate')?.errors?.['required']">
+                          Interest rate is required
+                        </div>
+                        <div class="form-text text-danger" 
+                             *ngIf="newAccountForm?.get('interestRate')?.touched && newAccountForm?.get('interestRate')?.errors?.['min'] || newAccountForm?.get('interestRate')?.errors?.['max']">
+                          Interest rate must be between 0 and 100
+                        </div>
+                      </div>
+                    </ng-container>
+
+                    <div class="d-flex gap-2">
+                      <button type="submit" class="btn btn-primary flex-grow-1" [disabled]="!newAccountForm?.valid">Create Account</button>
+                      <button type="button" class="btn btn-outline-secondary" (click)="showNewAccountForm = false">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accounts List -->
+            <div class="accounts-section">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                  <i class="bi bi-wallet2 me-2"></i>
+                  Customer Accounts
+                </h5>
+                <button class="btn btn-primary btn-sm" (click)="showNewAccountForm = true" *ngIf="!showNewAccountForm">
+                  <i class="bi bi-plus-circle me-1"></i>
+                  New Account
+                </button>
+              </div>
+
+              <!-- Messages -->
+              <div class="alert alert-danger" *ngIf="errorMessage">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                {{errorMessage}}
+              </div>
+
+              <div class="alert alert-success" *ngIf="successMessage">
+                <i class="bi bi-check-circle me-2"></i>
+                {{successMessage}}
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Account ID</th>
+                      <th>Type</th>
+                      <th>Balance</th>
+                      <th>Created Date</th>
+                      <th>Status</th>
+                      <th class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let account of accounts">
+                      <td>{{account.id}}</td>
+                      <td>
+                        <span [class]="account.type === 'SavingAccount' ? 'badge bg-success' : 'badge bg-primary'">
+                          {{account.type}}
+                        </span>
+                      </td>
+                      <td>
+                        <span [class]="account.balance >= 0 ? 'text-success' : 'text-danger'">
+                          {{account.balance | number:'1.2-2'}} DH
+                        </span>
+                      </td>
+                      <td>{{account.createdAt | date:'medium'}}</td>
+                      <td>
+                        <span class="badge" [ngClass]="{
+                          'bg-success': account.status === 'ACTIVATED',
+                          'bg-warning': account.status === 'CREATED',
+                          'bg-danger': account.status === 'SUSPENDED'
+                        }">
+                          {{account.status}}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="d-flex justify-content-center gap-2">
+                          <button class="btn btn-outline-primary btn-sm" (click)="handleOperations(account)">
+                            <i class="bi bi-cash-coin me-1"></i>
+                            Operations
+                          </button>
+                          <button class="btn btn-outline-danger btn-sm" (click)="handleDeleteAccount(account)">
+                            <i class="bi bi-trash me-1"></i>
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #loading>
+            <div class="text-center my-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <div class="mt-2 text-muted">Loading customer details...</div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

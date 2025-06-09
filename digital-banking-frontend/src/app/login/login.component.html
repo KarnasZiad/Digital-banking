@@ -1,0 +1,72 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center py-3">
+          <h4 class="mb-0">Digital Banking Login</h4>
+        </div>
+        <div class="card-body p-4">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <!-- Error Message -->
+            <div *ngIf="errorMessage" class="alert alert-danger">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              {{errorMessage}}
+            </div>
+
+            <!-- Username Field -->
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-person"></i>
+                </span>
+                <input 
+                  type="text" 
+                  formControlName="username"
+                  class="form-control"
+                  [class.is-invalid]="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
+                  placeholder="Enter username">
+              </div>
+              <div class="invalid-feedback" *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
+                Username is required
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-4">
+              <label class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-key"></i>
+                </span>
+                <input 
+                  type="password" 
+                  formControlName="password"
+                  class="form-control"
+                  [class.is-invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+                  placeholder="Enter password">
+              </div>
+              <div class="invalid-feedback" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+                Password is required
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+              type="submit" 
+              class="btn btn-primary w-100"
+              [disabled]="loginForm.invalid || isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+              Login
+            </button>
+
+            <!-- Register Link -->
+            <div class="text-center mt-3">
+              <p class="mb-0">Don't have an account? <a routerLink="/register">Register here</a></p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
